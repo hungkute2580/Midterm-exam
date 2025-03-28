@@ -20,13 +20,6 @@ Runs on Android and iOS
 - **Android Studio** (Android)
 - **Xcode** (iOS, macOS only)
 
-# How to run Capacitor app on Android
-
-## Requirements
-- Node.js and npm (https://nodejs.org/)
-- Capacitor CLI (install with `npm install -g @capacitor/cli`)
-- Android Studio (https://developer.android.com/studio)
-
 ## How to run the app
 
 1. **Clone repository**
