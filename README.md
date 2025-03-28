@@ -12,3 +12,34 @@ Display the battery status of the device.
 Capacitor (Core, Local Notifications, Share, Battery)
 HTML, CSS, JavaScript
 Runs on Android and iOS
+# How to Run Capacitor App on Android & iOS
+
+## Requirements
+- **Node.js & npm** ([Download here](https://nodejs.org/))
+- **Capacitor CLI** (`npm install -g @capacitor/cli`)
+- **Android Studio** (Android)
+- **Xcode** (iOS, macOS only)
+
+## Installation & Initialization
+```sh
+npm install
+npx cap init MyApp com.example.myapp
+npm install @capacitor/local-notifications @capacitor/share @capacitor/battery
+npx cap sync
+# Run on Android
+npx cap add android
+npx cap sync android
+npx cap open android # Open Android Studio, select the device and press Run
+
+# Run on iOS (Only on macOS)
+npx cap add ios
+npx cap sync ios
+npx cap open ios # Open Xcode, select the device and press Run
+
+# Note
+- **Android**: Enable **USB Debugging** if running on a real device.
+- **iOS**: Need to enable **Local Notifications** and **Share API** permissions in `Info.plist`.
+
+# If you get an error, try:
+npx cap sync
+npx cap doctor
