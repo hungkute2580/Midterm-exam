@@ -20,26 +20,54 @@ Runs on Android and iOS
 - **Android Studio** (Android)
 - **Xcode** (iOS, macOS only)
 
-## Installation & Initialization
+# How to run Capacitor app on Android
+
+## Requirements
+- Node.js and npm (https://nodejs.org/)
+- Capacitor CLI (install with `npm install -g @capacitor/cli`)
+- Android Studio (https://developer.android.com/studio)
+
+## How to run the app
+
+1. **Clone repository**
+```sh
+git clone https://github.com/hungkute2580/Midterm-exam.git
+cd Midterm-exam
+```
+
+2. **Install dependencies**
 ```sh
 npm install
-npx cap init MyApp com.example.myapp
-npm install @capacitor/local-notifications @capacitor/share @capacitor/battery
-npx cap sync
-# Run on Android
+```
+
+3. **Add Android platform** (if not already)
+```sh
 npx cap add android
+```
+
+4. **Sync project**
+```sh
 npx cap sync android
-npx cap open android # Open Android Studio, select the device and press Run
+```
 
-# Run on iOS (Only on macOS)
-npx cap add ios
-npx cap sync ios
-npx cap open ios # Open Xcode, select the device and press Run
+5. **Open project on Android Studio**
+```sh
+npx cap open android
+```
 
-# Note
-- **Android**: Enable **USB Debugging** if running on a real device.
-- **iOS**: Need to enable **Local Notifications** and **Share API** permissions in `Info.plist`.
+6. **Run the app on the device/emulator**
 
-# If you get an error, try:
-npx cap sync
-npx cap doctor
+- Click "Run" on Android Studio or use the command:
+```sh
+npx cap run android
+```
+
+## Note
+- Check the connected device/emulator before running.
+
+- If there is an error related to Gradle, check the Android Studio settings and update the appropriate SDK.
+
+- For debugging, you can use `adb logcat` or Chrome's DevTools.
+
+---
+Wish you run the app successfully!
