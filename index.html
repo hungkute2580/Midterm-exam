@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đếm ngược sinh nhật</title>
+  
+  <script src="https://unpkg.com/@capacitor/core@latest/dist/capacitor.js"></script>
+  <script src="https://unpkg.com/@capacitor/local-notifications@latest"></script>
+  <script src="https://unpkg.com/@capacitor/share@latest"></script>
+  <script src="https://unpkg.com/@capacitor/battery@latest"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+      color: #000;
+    }
+    h1 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    input {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+      width: 200px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #calculateBtn {
+      background-color: #28a745;
+    }
+    #shareBtn {
+      background-color: #007bff;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Đếm ngược sinh nhật</h1>
+  <input type="text" id="birthDate" placeholder="dd/mm">
+  <br>
+  <button onclick="calculateCountdown()">Tính toán</button>
+  <button onclick="shareResult()">Chia sẻ kết quả</button>
+  <h2 id="result"></h2>
+  <p id="batteryStatus"></p>
+
+  <script>
+   
+    async function calculateCountdown() {
+      const input = document.getElementById("birthDate").value;
+    
+      const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])$/;
+      if (!regex.test(input)) {
+        alert("Vui lòng nhập ngày sinh theo định dạng dd/mm!");
+        return;
+      }
+      const [day, month] = input.split('/').map(Number);
+      const now = new Date();
+      let birthday = new Date(now.getFullYear(), month - 1, day);
+
+      if (birthday < now) {
+        birthday = new Date(now.getFullYear() + 1, month - 1, day);
+      }
+      const diffTime = birthday - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      document.getElementById("result").innerText = `Còn ${diffDays} ngày đến sinh nhật của bạn!`;
+
+      if (Capacitor.isNativePlatform()) {
+        await Capacitor.Plugins.LocalNotifications.requestPermissions();
+        await Capacitor.Plugins.LocalNotifications.schedule({
+          notifications: [
+            {
+              title: "Đếm ngược sinh nhật",
+              body: `Còn ${diffDays} ngày đến sinh nhật của bạn!`,
+              id: 1,
+              schedule: { at: new Date(Date.now() + 2000) },
+              smallIcon: 'ic_stat_icon_config_sample'
+            }
+          ]
+        });
+      }
+    }
+
+    async function shareResult() {
+      const resultText = document.getElementById("result").innerText;
+      if (!resultText) {
+        alert("Vui lòng tính toán trước!");
+        return;
+      }
+      await Capacitor.Plugins.Share.share({
+        title: "Kết quả đếm ngược sinh nhật",
+        text: resultText,
+        url: "",
+        dialogTitle: "Chia sẻ kết quả"
+      });
+    }
+
+    async function updateBatteryStatus() {
+      if (Capacitor.isNativePlatform() && Capacitor.Plugins.Battery) {
+        const status = await Capacitor.Plugins.Battery.getStatus();
+        document.getElementById("batteryStatus").innerText = `Pin: ${Math.round(status.batteryLevel * 100)}%`;
+      } else {
+        document.getElementById("batteryStatus").innerText = "Error";
+      }
+    }
+
+    updateBatteryStatus();
+
+    if (Capacitor.isNativePlatform() && Capacitor.Plugins.Battery && Capacitor.Plugins.Battery.addListener) {
+      Capacitor.Plugins.Battery.addListener('batteryStatusChange', (status) => {
+        document.getElementById("batteryStatus").innerText = `Pin: ${Math.round(status.batteryLevel * 100)}%`;
+      });
+    }
+  </script>
+</body>
+</html>
